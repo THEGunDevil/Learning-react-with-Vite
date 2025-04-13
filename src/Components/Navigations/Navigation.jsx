@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { FaCartShopping, FaUser, FaUserPlus } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
 import { UserContext } from "../Contexts/UserContext";
-import { FaHome, FaSignInAlt } from "react-icons/fa";
+import { FaHome, FaSignInAlt, FaTachometerAlt } from "react-icons/fa";
 const Navigation = () => {
   const { user } = useContext(UserContext);
   return (
@@ -52,6 +52,19 @@ const Navigation = () => {
             Register
           </NavLink>
         </li>
+        {user?.roles === "Author" && (
+          <li>
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) =>
+                `flex items-center ${isActive ? "text-amber-500" : ""}`
+              }
+            >
+              <FaTachometerAlt className="mr-1.5 text-amber-400" />
+              Dashboard
+            </NavLink>
+          </li>
+        )}
       </ul>
     </>
   );

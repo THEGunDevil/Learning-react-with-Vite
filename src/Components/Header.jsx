@@ -99,7 +99,7 @@ const Header = () => {
       >
         <Filter />
       </section>
-      <div className="h-15"></div>
+      <div className="h-18"></div>
     </>
   );
 };

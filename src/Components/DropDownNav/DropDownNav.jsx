@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { FaCartShopping, FaUserPlus } from "react-icons/fa6";
+import { FaUserPlus } from "react-icons/fa6";
 import { UserContext } from "../Contexts/UserContext";
-import { FaHome, FaSignInAlt, FaUser } from "react-icons/fa";
+import { FaHome, FaSignInAlt, FaTachometerAlt, FaUser } from "react-icons/fa";
 
 function DropDownNav() {
   const { user } = useContext(UserContext);
@@ -54,6 +54,19 @@ function DropDownNav() {
             Register
           </NavLink>
         </li>
+        {user?.roles === "Author" && (
+          <li className="flex hover:bg-gray-100 p-1.5">
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) =>
+                `flex items-center ${isActive ? "text-amber-500" : ""}`
+              }
+            >
+              <FaTachometerAlt className="mr-1.5 text-amber-400 text-xl" />
+              Dashboard
+            </NavLink>
+          </li>
+        )}
       </ul>
     </>
   );

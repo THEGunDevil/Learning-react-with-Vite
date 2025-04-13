@@ -67,7 +67,7 @@ const ProductCards = () => {
 
       localStorage.setItem("listedProducts", JSON.stringify(updatedProducts));
       return updatedProducts;
-    });
+    });    
   };  
   return (
     <div className="grid relative px-6 py-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:p-20 xl:grid-cols-4 xl:p-20 gap-8">

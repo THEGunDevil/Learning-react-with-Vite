@@ -4,8 +4,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../Contexts/UserContext";
 
 const SignInPage = () => {
-  const navigate = useNavigate()
-  const {signin} = useContext(UserContext)
+  const navigate = useNavigate();
+  const { signin } = useContext(UserContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -21,21 +21,15 @@ const SignInPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const signedUser = signin(
-      formData.email,
-      formData.password,
-
-    );
+    const signedUser = signin(formData.email, formData.password);
     if (signedUser) {
       e.target.reset();
       setFormData({
         email: "",
         password: "",
       });
-      navigate("/profile")
-      console.log("Form submitted:", formData);
+      navigate("/profile");
     }
-    
   };
 
   return (
@@ -131,7 +125,10 @@ const SignInPage = () => {
                 Sign in
               </button>
               <span className="absolute right-0 text-gray-500 text-[14px] mt-2.5">
-                Don't have an account? <NavLink to="/register" className="text-blue-500">Click Here</NavLink>
+                Don't have an account?{" "}
+                <NavLink to="/register" className="text-blue-500">
+                  Click Here
+                </NavLink>
               </span>
             </div>
           </form>

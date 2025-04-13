@@ -11,7 +11,9 @@ import UserProvider from "./Components/Contexts/UserContext.jsx";
 import SignInPage from "./Components/SignInPage/SignInPage.jsx";
 import { ToastContainer } from "react-toastify";
 import FilteredProducts from "./Components/FilteredProducts.jsx";
-
+import Dashboard from "./Components/Dashboard/Dashboard.jsx";
+import AddProduct from "./Components/AddProduct/AddProduct.jsx";
+Dashboard;
 function RouterWrapper() {
   const Cart = lazy(() => import("./Components/ProductDetails.jsx"));
   const Profile = lazy(() => import("./Components/Profile/Profile.jsx"));
@@ -87,6 +89,34 @@ function RouterWrapper() {
         {
           path: "signin",
           element: <SignInPage />,
+        },
+        {
+          path: "dashboard",
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex py-10 justify-center items-center">
+                  <div className="w-12 h-12 border-4 border-indigo-500 border-dashed rounded-full animate-spin"></div>
+                </div>
+              }
+            >
+              <Dashboard />
+            </Suspense>
+          ),
+        },
+        {
+          path: "addproduct",
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex py-10 justify-center items-center">
+                  <div className="w-12 h-12 border-4 border-indigo-500 border-dashed rounded-full animate-spin"></div>
+                </div>
+              }
+            >
+              <AddProduct />
+            </Suspense>
+          ),
         },
       ],
     },
