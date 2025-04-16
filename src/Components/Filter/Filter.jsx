@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { productContext } from "../Contexts/ProductContext";
 import { useNavigate } from "react-router-dom";
-import FetchData from "../Fetchdata/FetchData";
+import FetchData from "../FetchData/FetchData";
 function Filter() {
   FetchData();
 

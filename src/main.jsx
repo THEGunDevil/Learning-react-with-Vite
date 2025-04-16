@@ -24,7 +24,17 @@ function RouterWrapper() {
       children: [
         {
           path: "",
-          element: <Home />,
+          element: (
+            <Suspense
+              fallback={
+                <div className="flex py-10 justify-center items-center">
+                  <div className="w-12 h-12 border-4 border-indigo-500 border-dashed rounded-full animate-spin"></div>
+                </div>
+              }
+            >
+              <Home/>
+            </Suspense>
+          ),
         },
         {
           path: "profile",

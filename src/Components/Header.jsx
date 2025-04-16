@@ -82,7 +82,7 @@ const Header = () => {
         <DropDownNav />
       </section>
       <section
-          className={`fixed top-20 left-0 w-full xl:hidden lg:hidden md:hidden sm:hidden h-12 flex justify-center items-center bg-white transition-all duration-700 ease-in-out z-10 shadow-lg ${
+          className={`fixed top-18 left-0 w-full xl:hidden lg:hidden md:hidden sm:hidden h-12 flex justify-center items-center bg-white transition-all duration-700 ease-in-out z-10 shadow-lg ${
             dropSearchBox
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-full pointer-events-none"

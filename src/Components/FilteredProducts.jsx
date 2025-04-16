@@ -5,7 +5,6 @@ import ReactPaginate from "react-paginate";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { productContext } from "./Contexts/ProductContext";
 import FetchProdctDta from "./FetchData/FetchProdctDta";
-
 const FilteredProducts = () => {
   const navigate = useNavigate();
   const location = useLocation();

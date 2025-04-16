@@ -11,8 +11,6 @@ function SwiperBanner() {
   const featuredProducts = products
     .filter((p) => p.rating?.count >= 500)
     .slice(0, 5);
-console.log(featuredProducts);
-
     return (
         <div className="mt-6">
           {featuredProducts.length > 0 && (

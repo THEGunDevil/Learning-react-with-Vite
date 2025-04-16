@@ -15,7 +15,7 @@ function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const register = async (email, password, firstname, lastname) => {
+  const register = async (email, password, firstname, lastname, phone, address) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -31,6 +31,8 @@ function UserProvider({ children }) {
         email,
         uid: newUser.uid,
         createdAt: serverTimestamp(),
+        phone,
+        address,
       });
 
       setUser(newUser);
