@@ -4,6 +4,7 @@ import "swiper/css/navigation";
 import SwiperBanner from "../SwiperBanner/SwiperBanner";
 import ProductCards from "../ProductCards/ProductCards";
 import FilteredSlides from "../ProductCards/FilteredSlides";
+import Category from "../Category/Category";
 
 const Home = () => {
   return (
@@ -13,8 +14,10 @@ const Home = () => {
         <SwiperBanner />
       </div>
       <FilteredSlides category={"women's clothing"} title={"Women's Clothing"}/>
-      <FilteredSlides category={"men's clothing"} title={"Men's Clothing"}/>
+      <FilteredSlides category={"men's clothing"} title={"Men's Clothing"} />
+      <Category/>
       <ProductCards />
+      
     </>
   );
 };

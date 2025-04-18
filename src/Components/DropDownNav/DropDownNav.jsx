@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { FaUserPlus } from "react-icons/fa6";
-import { UserContext } from "../Contexts/UserContext";
+import { UserContext } from "../../Contexts/UserContext";
 import { FaHome, FaSignInAlt, FaTachometerAlt, FaUser } from "react-icons/fa";
 
 function DropDownNav() {
@@ -31,17 +31,21 @@ function DropDownNav() {
             profile
           </NavLink>
         </li>
-        <li className="flex hover:bg-gray-100 p-1.5">
-          <NavLink
-            to="signin"
-            className={({ isActive }) =>
-              `flex items-center ${isActive ? "text-amber-500" : ""}`
-            }
-          >
-            <FaSignInAlt className="mr-1.5 text-amber-400 text-xl" />
-            Sign in
-          </NavLink>
-        </li>
+        {user ? (
+          ""
+        ) : (
+          <li className="flex hover:bg-gray-100 p-1.5">
+            <NavLink
+              to="signin"
+              className={({ isActive }) =>
+                `flex items-center ${isActive ? "text-amber-500" : ""}`
+              }
+            >
+              <FaSignInAlt className="mr-1.5 text-amber-400 text-xl" />
+              Sign in
+            </NavLink>
+          </li>
+        )}
 
         <li className="flex hover:bg-gray-100 p-1.5">
           <NavLink

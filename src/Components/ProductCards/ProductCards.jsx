@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { productContext } from "../Contexts/ProductContext";
+import { productContext } from "../../Contexts/ProductContext";
 import StarRatings from "react-star-ratings";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
@@ -15,12 +15,12 @@ export const truncateText = (string, maxLength) => {
 
 const ProductCards = () => {
   FetchData();
-const navigate = useNavigate();
-const { products, setProductDets, setListedPrdcts } =
+  const navigate = useNavigate();
+  const { products, setProductDets, setListedPrdcts } =
     useContext(productContext);
- const handleProductDetails = async (id) => {
-  await FetchProdctDta(id, setProductDets);
-  navigate(`/cart/${id}`);
+  const handleProductDetails = async (id) => {
+    await FetchProdctDta(id, setProductDets);
+    navigate(`/products/${id}`);
   };
   const [currentPage, setCurrentPage] = useState(0);
   const productsPerPage = 10;
@@ -71,11 +71,10 @@ const { products, setProductDets, setListedPrdcts } =
   };
   return (
     <>
-      <section className="relative w-full px-6 py-16 lg:p-20 xl:p-20">
-        <h1 className="text-3xl font-bold text-gray-800 text-center">
+        <h1 className="text-3xl py-16 font-bold text-gray-800 text-center">
           All Products
         </h1>
-        <div className="grid relative px-6 py-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:p-20 xl:grid-cols-4 xl:p-20 gap-8">
+        <div className="grid relative px-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:px-20 xl:px-20 gap-8">
           {currentProducts.map((product) => (
             <div
               key={product.id}
@@ -184,7 +183,6 @@ const { products, setProductDets, setListedPrdcts } =
             pageRangeDisplayed={3}
           />
         </div>
-      </section>
     </>
   );
 };

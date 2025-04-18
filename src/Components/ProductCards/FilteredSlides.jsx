@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { productContext } from "../Contexts/ProductContext";
+import { productContext } from "../../Contexts/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -16,7 +16,7 @@ function FilteredSlides({ category, title }) {
   const navigate = useNavigate();
   const handleProductDetails = async (id) => {
     await FetchProdctDta(id, setProductDets);
-    navigate(`/cart/${id}`);
+    navigate(`/products/${id}`);
   };
   useEffect(() => {
     if (category && products?.length) {
@@ -130,7 +130,7 @@ function FilteredSlides({ category, title }) {
                 </div>
 
                 <button
-                  className="relative w-full group bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-3.5 px-4 transition-all duration-300 flex items-center justify-center gap-2"
+                  className="relative cursor-pointer w-full group bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-3.5 px-4 transition-all duration-300 flex items-center justify-center gap-2"
                   onClick={(e) => handleAddtoCartBtn(product, e)}
                 >
                   <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>

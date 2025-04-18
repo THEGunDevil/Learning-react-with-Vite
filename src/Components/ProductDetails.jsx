@@ -2,7 +2,7 @@ import React, { useContext, useMemo, useState } from "react";
 import { FaHeart } from "react-icons/fa6";
 import StarRatings from "react-star-ratings";
 import QuantityBtn from "./QuantityBtn/QuantityBtn";
-import { productContext } from "./Contexts/ProductContext";
+import { productContext } from "../Contexts/ProductContext";
 const Cart = () => {
   const { productDets, setListedPrdcts } = useContext(productContext);
   const handleAddtoCartBtn = () => {

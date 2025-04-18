@@ -4,15 +4,15 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./Components/Layout.jsx";
 import Home from "./Components/Home/Home.jsx";
-import ProductProvider from "./Components/Contexts/ProductContext.jsx";
 import { CartProvider } from "react-use-cart";
 import RegistrationPage from "./Components/RegistrationPage/RegistrationPage.jsx";
-import UserProvider from "./Components/Contexts/UserContext.jsx";
+import UserProvider from "./Contexts/UserContext.jsx";
 import SignInPage from "./Components/SignInPage/SignInPage.jsx";
 import { ToastContainer } from "react-toastify";
 import FilteredProducts from "./Components/FilteredProducts.jsx";
 import Dashboard from "./Components/Dashboard/Dashboard.jsx";
 import AddProduct from "./Components/AddProduct/AddProduct.jsx";
+import ProductProvider from "./Contexts/ProductContext.jsx";
 Dashboard;
 function RouterWrapper() {
   const Cart = lazy(() => import("./Components/ProductDetails.jsx"));
@@ -32,7 +32,7 @@ function RouterWrapper() {
                 </div>
               }
             >
-              <Home/>
+              <Home />
             </Suspense>
           ),
         },
@@ -51,7 +51,7 @@ function RouterWrapper() {
           ),
         },
         {
-          path: "cart",
+          path: "product",
           element: (
             <Suspense
               fallback={
@@ -65,7 +65,7 @@ function RouterWrapper() {
           ),
         },
         {
-          path: "cart/:productId",
+          path: "products/:productId",
           element: (
             <Suspense
               fallback={
@@ -137,13 +137,13 @@ function RouterWrapper() {
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ProductProvider>
-      <UserProvider>
+    <UserProvider>
+      <ProductProvider>
         <CartProvider>
           <RouterWrapper />
         </CartProvider>
-      </UserProvider>
-    </ProductProvider>
+      </ProductProvider>
+    </UserProvider>
     <ToastContainer />
   </StrictMode>
 );

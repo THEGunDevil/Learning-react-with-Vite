@@ -1,25 +1,11 @@
-import React, { useContext } from "react";
-import { productContext } from "../Contexts/ProductContext";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 import FetchData from "../FetchData/FetchData";
+import { useHandleFilteredPrdcts, useUniqueCategories } from "../..";
 function Filter() {
   FetchData();
 
-  const { products } = useContext(productContext);
-  const navigate = useNavigate();
-
-  const uniqueCategories = [...new Set(products?.map((p) => p.category))];
-
-  const handleFilteredPrdcts = (category) => {
-    const filtered = products.filter(
-      (product) => product.category === category
-    );
-    localStorage.setItem("filteredProducts", JSON.stringify(filtered));
-    navigate("/filteredprdcts", {
-      state: { category },
-      replace: true,
-    });
-  };
+  const uniqueCategories = useUniqueCategories();
+  const handleFilteredPrdcts = useHandleFilteredPrdcts();
 
   return (
     <div className="xl:px-20 lg:px-20 p-4">
@@ -30,7 +16,6 @@ function Filter() {
           className="
             inline-block 
             px-4 py-1.5
-             
             mr-3 mb-3 
             bg-gray-50 
             rounded-full 

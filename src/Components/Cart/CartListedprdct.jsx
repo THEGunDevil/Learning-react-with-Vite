@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import QuantityBtn from "../QuantityBtn/QuantityBtn";
-import { productContext } from "../Contexts/ProductContext";
+import { productContext } from "../../Contexts/ProductContext";
 import { FaXmark } from "react-icons/fa6";
 
 function CartListedprdct() {
@@ -28,35 +28,33 @@ function CartListedprdct() {
 
   // Safe price formatting function
   const formatPrice = (price) => {
-    if (typeof price !== 'number' || isNaN(price)) {
-      console.warn('Invalid price value:', price);
-      return '$0.00';
+    if (typeof price !== "number" || isNaN(price)) {
+      console.warn("Invalid price value:", price);
+      return "$0.00";
     }
     return `$${price.toFixed(2)}`;
   };
 
   if (!listedProducts || listedProducts.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-400">
-        Your cart is empty
-      </div>
+      <div className="text-center py-8 text-gray-400">Your cart is empty</div>
     );
   }
 
   return (
     <div className="space-y-3 sm:space-y-4">
       {listedProducts.map((product) => {
-        if (!product || typeof product !== 'object') {
-          console.error('Invalid product:', product);
+        if (!product || typeof product !== "object") {
+          console.error("Invalid product:", product);
           return null;
         }
 
-        const { 
-          productId, 
-          productImg, 
-          productName, 
-          productPrice = 0, 
-          quantity = 1 
+        const {
+          productId,
+          productImg,
+          productName,
+          productPrice = 0,
+          quantity = 1,
         } = product;
 
         const lineTotal = productPrice * quantity;
@@ -78,13 +76,13 @@ function CartListedprdct() {
             {/* Product image */}
             <div className="w-20 h-20 flex-shrink-0">
               <img
-                src={productImg || ''}
-                alt={productName || 'Product image'}
+                src={productImg || ""}
+                alt={productName || "Product image"}
                 className="w-full h-full object-cover rounded"
                 loading="lazy"
                 onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/80';
-                  e.target.alt = 'Placeholder image';
+                  e.target.src = "https://via.placeholder.com/80";
+                  e.target.alt = "Placeholder image";
                 }}
               />
             </div>
@@ -92,7 +90,7 @@ function CartListedprdct() {
             {/* Product info */}
             <div className="flex-1 min-w-0">
               <h3 className="text-sm sm:text-base font-medium text-white truncate">
-                {productName || 'Unnamed Product'}
+                {productName || "Unnamed Product"}
               </h3>
               <p className="text-xs sm:text-sm text-gray-300">
                 {formatPrice(productPrice)} each

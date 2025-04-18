@@ -5,7 +5,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { auth, db } from "../Firebase/Firebase";
+import { auth, db } from "../Components/Firebase/Firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 
@@ -15,16 +15,23 @@ function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const register = async (email, password, firstname, lastname, phone, address) => {
+  const register = async (
+    email,
+    password,
+    firstname,
+    lastname,
+    phone,
+    address
+  ) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      
+
       const newUser = userCredential.user;
-      
+
       await setDoc(doc(db, "users", newUser.uid), {
         firstname,
         lastname,
@@ -36,25 +43,31 @@ function UserProvider({ children }) {
       });
 
       setUser(newUser);
-      
-      toast.success("You have registered successfully!", {position:"top-center"});
+
+      toast.success("You have registered successfully!", {
+        position: "top-center",
+      });
       return newUser;
     } catch (error) {
       console.error(error);
-      toast.error("Somthing went wrong.", {position:"bottom-center"});
+      toast.error("Somthing went wrong.", { position: "bottom-center" });
       throw error;
     }
   };
 
   const signin = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       setUser(userCredential.user);
-      toast.success("Signed in successfully.", {position:"top-center"});
+      toast.success("Signed in successfully.", { position: "top-center" });
       return userCredential.user;
     } catch (error) {
       console.error(error);
-      toast.error("Signed in failed.", {position:"bottom-center"});
+      toast.error("Signed in failed.", { position: "bottom-center" });
       throw error;
     }
   };
@@ -65,7 +78,7 @@ function UserProvider({ children }) {
       setUser(null);
     } catch (error) {
       console.error(error);
-      toast.error(error.message, {position:"bottom-center"});
+      toast.error(error.message, { position: "bottom-center" });
       throw error;
     }
   };
@@ -80,7 +93,9 @@ function UserProvider({ children }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, loading, register, signin, setUser, signout }}>
+    <UserContext.Provider
+      value={{ user, loading, register, signin, setUser, signout }}
+    >
       {!loading && children}
     </UserContext.Provider>
   );

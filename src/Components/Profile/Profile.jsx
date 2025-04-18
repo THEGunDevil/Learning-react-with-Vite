@@ -10,9 +10,9 @@ import {
   FaUserPlus,
   FaPlusCircle,
   FaSave,
-  FaTimes
+  FaTimes,
 } from "react-icons/fa";
-import { UserContext } from "../Contexts/UserContext";
+import { UserContext } from "../../Contexts/UserContext";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,10 +22,10 @@ const Profile = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstname: '',
-    lastname: '',
-    phone: '',
-    address: ''
+    firstname: "",
+    lastname: "",
+    phone: "",
+    address: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -36,10 +36,10 @@ const Profile = () => {
         const userData = docSnap.data();
         setUser(userData);
         setFormData({
-          firstname: userData.firstname || '',
-          lastname: userData.lastname || '',
-          phone: userData.phone || '',
-          address: userData.address || ''
+          firstname: userData.firstname || "",
+          lastname: userData.lastname || "",
+          phone: userData.phone || "",
+          address: userData.address || "",
         });
       };
       fetchData();
@@ -49,13 +49,13 @@ const Profile = () => {
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSaveChanges = async () => {
     if (!formData.firstname || !formData.lastname) {
-      alert('First name and last name are required');
+      alert("First name and last name are required");
       return;
     }
 
@@ -67,7 +67,7 @@ const Profile = () => {
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile: ", error);
-      alert('Failed to update profile');
+      alert("Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -79,10 +79,10 @@ const Profile = () => {
 
   const handleCancelEdit = () => {
     setFormData({
-      firstname: user.firstname || '',
-      lastname: user.lastname || '',
-      phone: user.phone || '',
-      address: user.address || ''
+      firstname: user.firstname || "",
+      lastname: user.lastname || "",
+      phone: user.phone || "",
+      address: user.address || "",
     });
     setIsEditing(false);
   };
@@ -153,7 +153,7 @@ const Profile = () => {
                           className="flex items-center space-x-1 bg-green-600 hover:bg-green-800 px-4 py-2 rounded-md transition-colors"
                         >
                           <FaSave className="text-sm" />
-                          <span>{loading ? 'Saving...' : 'Save'}</span>
+                          <span>{loading ? "Saving..." : "Save"}</span>
                         </button>
                         <button
                           onClick={handleCancelEdit}
@@ -182,7 +182,7 @@ const Profile = () => {
                     <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                       Personal Information
                     </h2>
-                    
+
                     <div className="flex items-center space-x-3">
                       <FaEnvelope className="text-gray-500" />
                       <div>

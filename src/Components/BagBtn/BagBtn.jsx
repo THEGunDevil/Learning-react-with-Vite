@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FaBagShopping } from "react-icons/fa6";
-import { productContext } from "../Contexts/ProductContext";
+import { productContext } from "../../Contexts/ProductContext";
 function BagBtn() {
   const { listedProducts } = useContext(productContext);
   const { cartListActive, setCartListActive } = useContext(productContext);
