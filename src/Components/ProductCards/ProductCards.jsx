@@ -21,9 +21,7 @@ const ProductCards = () => {
   const handleProductDetails = async (id) => {
     await FetchProdctDta(id, setProductDets);
     navigate(`/products/${id}`);
-  };
-  console.log(products);
-  
+  };  
   const [currentPage, setCurrentPage] = useState(0);
   const productsPerPage = 10;
 

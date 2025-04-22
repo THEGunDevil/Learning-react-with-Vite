@@ -29,13 +29,13 @@ const Header = () => {
         </div>
         <button
           onClick={handleFilterDropDwn}
-          className="h-9 border px-2 absolute right-48 flex sm:hidden justify-center items-center "
+          className="h-9 absolute right-40 flex sm:hidden justify-center items-center "
         >
           <HiOutlineFilter className="text-amber-500" />
           <span className="ml-1.5">Filter</span>
         </button>
         <button
-          className="flex absolute right-20 cursor-pointer bg-gray-50 text-[18px] items-center border rounded-3xl sm:hidden px-3 py-1.5"
+          className="flex absolute right-14 cursor-pointer bg-gray-50 items-center border rounded-2xl sm:hidden px-2.5 py-1.5"
           onClick={handleSearchDropDwn}
           aria-label="Toggle menu"
         >

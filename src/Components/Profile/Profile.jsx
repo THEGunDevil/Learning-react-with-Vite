@@ -13,10 +13,10 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { UserContext } from "../../Contexts/UserContext";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../Firebase/Firebase";
 import { Link, useNavigate } from "react-router-dom";
 import MyProducts from "../MyProducts/MyProducts";
+import { db } from "../../Firebase";
+import { doc,getDoc, updateDoc} from "firebase/firestore";
 
 const Profile = () => {
   const { user, setUser, signout } = useContext(UserContext);

@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "../Firebase/Firebase";
-
+import { db, storage } from "../../Firebase";
 function AddProduct() {
   const [product, setProduct] = useState({
     title: "",

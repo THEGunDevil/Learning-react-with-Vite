@@ -5,9 +5,9 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { auth, db } from "../Components/Firebase/Firebase";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
+import { doc, serverTimestamp, setDoc} from "firebase/firestore";
+import { auth, db } from "../Firebase";
 
 export const UserContext = createContext();
 

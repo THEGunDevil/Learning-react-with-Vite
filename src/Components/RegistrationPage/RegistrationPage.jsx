@@ -64,7 +64,7 @@ const RegistrationPage = () => {
       </div>
 
       <div className="mt-9.5 mx-auto">
-        <div className="bg-white w-md sm:w-full py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white w-[320px] sm:w-full py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-y-8 sm:gap-8">
               <section className="space-y-6">
