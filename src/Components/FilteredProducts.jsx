@@ -37,7 +37,7 @@ const FilteredProducts = () => {
 
   const handleProductDetails = async (id) => {
     await FetchProdctDta(id, setProductDets);
-    navigate(`/cart/${id}`);
+    navigate(`/products/${id}`);
   };
 
   const pageCount = Math.ceil(filteredProducts.length / productsPerPage);

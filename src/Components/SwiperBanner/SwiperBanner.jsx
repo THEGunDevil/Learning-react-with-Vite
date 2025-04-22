@@ -30,7 +30,7 @@ function SwiperBanner() {
           slidesPerView={1}
           modules={[Navigation, Autoplay]}
           navigation
-          loop={featuredProducts.length > 2}
+          loop
           autoplay={{ delay: 3000 }}
           className="rounded-xl overflow-hidden"
         >

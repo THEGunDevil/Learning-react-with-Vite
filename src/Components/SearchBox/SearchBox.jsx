@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import {  FaXmark } from "react-icons/fa6";
-
-const SearchBox = () => {
-  const [InputTxt, setInputTxt] = useState("");
-  
+import React from "react";
+import { FaXmark } from "react-icons/fa6"
+const SearchBox = ({ InputTxt, setInputTxt }) => {
   const handleCancelBtn = (e) => {
     e.preventDefault();
     setInputTxt("");
   };
-  
+
   const handleSearchBox = (e) => {
     setInputTxt(e.target.value);
   };
@@ -22,8 +19,8 @@ const SearchBox = () => {
         value={InputTxt}
         className="md:w-75 sm:w-62 lg:w-75 xl:w-95 outline-0 no-cancel-btn pr-8"
         onChange={handleSearchBox}
+        autoComplete="off"
       />
-      
 
       <button
         onClick={handleCancelBtn}
@@ -33,7 +30,7 @@ const SearchBox = () => {
       >
         <FaXmark className="text-xl" />
       </button>
-      
+
       <label
         htmlFor="Search"
         className="absolute right-0 cursor-pointer border-l h-7 w-16 flex items-center justify-center ml-2"
@@ -44,4 +41,4 @@ const SearchBox = () => {
   );
 };
 
-export default SearchBox;
+export default SearchBox
