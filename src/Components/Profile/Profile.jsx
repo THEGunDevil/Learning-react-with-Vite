@@ -16,6 +16,7 @@ import { UserContext } from "../../Contexts/UserContext";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import { Link, useNavigate } from "react-router-dom";
+import MyProducts from "../MyProducts/MyProducts";
 
 const Profile = () => {
   const { user, setUser, signout } = useContext(UserContext);
@@ -91,7 +92,7 @@ const Profile = () => {
     <>
       {user ? (
         <section className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <section className="bg-white shadow rounded-lg overflow-hidden">
               <div className="bg-indigo-700 px-6 py-8 text-white">
                 <div className="lg:flex block items-center justify-between">
@@ -301,7 +302,8 @@ const Profile = () => {
                 </div>
               </div>
             </section>
-          </div>
+          </div>{" "}
+          <MyProducts />
         </section>
       ) : (
         <section className="min-h-screen bg-gray-50 flex items-center justify-center px-4">

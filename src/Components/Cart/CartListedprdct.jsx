@@ -2,7 +2,12 @@ import React, { useContext } from "react";
 import QuantityBtn from "../QuantityBtn/QuantityBtn";
 import { productContext } from "../../Contexts/ProductContext";
 import { FaXmark } from "react-icons/fa6";
-
+export const formatPrice = (price) => {
+    if (typeof price !== "number" || isNaN(price)) {
+      return "$0.00";
+    }
+    return `$${price.toFixed(2)}`;
+  };
 function CartListedprdct() {
   const { listedProducts, setListedPrdcts } = useContext(productContext);
 
@@ -27,13 +32,7 @@ function CartListedprdct() {
   };
 
   // Safe price formatting function
-  const formatPrice = (price) => {
-    if (typeof price !== "number" || isNaN(price)) {
-      console.warn("Invalid price value:", price);
-      return "$0.00";
-    }
-    return `$${price.toFixed(2)}`;
-  };
+
 
   if (!listedProducts || listedProducts.length === 0) {
     return (

@@ -1,6 +1,8 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db, storage } from "../Firebase/Firebase";
 
 function AddProduct() {
   const [product, setProduct] = useState({
@@ -10,6 +12,7 @@ function AddProduct() {
     category: "",
     image: null,
     stock: 0,
+    customCategory: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -35,26 +38,34 @@ function AddProduct() {
     setSuccess(false);
 
     try {
+      let imageUrl = "";
+
+      if (product.image) {
+        const imageRef = ref(
+          storage,
+          `product-images/${Date.now()}-${product.image.name}`
+        );
+        await uploadBytes(imageRef, product.image);
+        imageUrl = await getDownloadURL(imageRef);
+      }
+
       const payload = {
         title: product.title,
-        price: product.price,
+        price: parseFloat(product.price),
         description: product.description,
         category:
           product.category === "other"
             ? product.customCategory
             : product.category,
-        stock: product.stock,
-        image: product.image,
+        stock: parseInt(product.stock),
+        image: imageUrl,
       };
 
-      const response = await axios.post(
-        "https://fakestoreapi.com/products",
-        payload
-      );
-      console.log("Product added:", response.data);
+      await addDoc(collection(db, "products"), payload);
 
       toast.success("Product Added!", { position: "top-center" });
-        setSuccess(true);
+      setSuccess(true);
+
       setProduct({
         title: "",
         price: 0.0,
@@ -65,6 +76,7 @@ function AddProduct() {
         customCategory: "",
       });
     } catch (error) {
+      console.error("Error adding product:", error);
       toast.error("Something went wrong while adding the product.", {
         position: "bottom-center",
       });

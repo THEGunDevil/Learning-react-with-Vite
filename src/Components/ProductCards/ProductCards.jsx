@@ -22,6 +22,8 @@ const ProductCards = () => {
     await FetchProdctDta(id, setProductDets);
     navigate(`/products/${id}`);
   };
+  console.log(products);
+  
   const [currentPage, setCurrentPage] = useState(0);
   const productsPerPage = 10;
 
@@ -70,11 +72,11 @@ const ProductCards = () => {
     });
   };
   return (
-    <>
-        <h1 className="text-3xl py-16 font-bold text-gray-800 text-center">
+      <section className="px-6 relative sm:px-6 md:px-6 lg:px-20 xl:px-20">
+        <h1 className="text-3xl mt-16 font-bold text-gray-800 text-center">
           All Products
         </h1>
-        <div className="grid relative px-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:px-20 xl:px-20 gap-8">
+        <div className="grid relative py-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {currentProducts.map((product) => (
             <div
               key={product.id}
@@ -183,7 +185,7 @@ const ProductCards = () => {
             pageRangeDisplayed={3}
           />
         </div>
-    </>
+      </section>
   );
 };
 
