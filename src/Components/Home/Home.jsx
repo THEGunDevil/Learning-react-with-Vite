@@ -10,7 +10,7 @@ const Home = () => {
   return (
     <>
       <div className="px-6 sm:px-6 md:px-6 lg:px-20 xl:px-20 mt-5 sm:mt-5 md:mt-10 lg:mt-10 xl:mt-10">
-        <h1 className="text-4xl text-amber-400 font-specific">featured.</h1>
+        <h1 className="text-4xl text-amber-400 font-specific">Featured.</h1>
         <SwiperBanner />
       </div>
       <FilteredSlides category={"women's clothing"} title={"Women's Clothing"}/>

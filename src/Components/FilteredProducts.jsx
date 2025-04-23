@@ -92,7 +92,7 @@ const FilteredProducts = () => {
 
   return (
     <div className="relative">
-      <div className="px-6 py-4 bg-gray-50 border-b">
+      <div className="xl:px-20 md:px-6 lg:px-20 sm:px-6 px-4 py-4 bg-gray-50 border-b">
         <h2 className="text-xl font-semibold text-gray-800">
           {location.state?.category
             ? `Category: ${location.state.category}`
@@ -103,17 +103,17 @@ const FilteredProducts = () => {
         </p>
       </div>
 
-      <div className="grid px-6 py-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:p-20 xl:grid-cols-4 xl:p-20 gap-8">
+      <div className="grid xl:px-20 md:px-6 lg:px-20 sm:px-6 px-4 relative xl:pt-10 lg:pt-10 md:pt-10 sm:pt-5 pt-5 pb-16 grid-cols-2 place-items-center sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-4 gap-8">
         {currentProducts.length > 0 ? (
           currentProducts.map((product) => (
             <div
               key={product.id}
-              className="group bg-white rounded-2xl shadow-sm hover:shadow-md border border-gray-100 overflow-hidden transition-all duration-300 ease-in-out h-full flex flex-col hover:-translate-y-1"
-              onClick={() => handleProductDetails(product.id)}
+              className="group xl:w-full lg:w-full md:w-full sm:w-full w-40 bg-white xl:rounded-xl lg:rounded-xl md:rounded-xl rounded shadow-sm hover:shadow-md border border-gray-100 overflow-hidden transition-all duration-300 ease-in-out flex flex-col hover:-translate-y-1"
             >
-              {" "}
-              <div className="w-full h-64 p-5 flex items-center justify-center bg-gray-50 overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/10 z-10"></div>
+              <div
+                className="h-24 xl:h-64 lg:h-55 md:h-44 xl:p-5 lg:p-5 md:p-5 sm:p-5 p-2 flex items-center justify-center bg-gray-50 relative cursor-pointer"
+                onClick={() => handleProductDetails(product.id)}
+              >
                 <img
                   className="h-full object-contain transition-transform duration-500 group-hover:scale-105 mix-blend-multiply"
                   src={product.image}
@@ -124,19 +124,20 @@ const FilteredProducts = () => {
                   Quick View
                 </span>
               </div>
-              <div className="p-5 pt-4 flex-grow flex flex-col">
-                <div className="mb-3">
-                  <h3 className="text-lg font-medium text-gray-900 leading-snug">
-                    {truncateText(product.title, 50)}
+
+              <div className="xl:p-5 lg:p-5 md:p-5 p-3 xl:pt-4 lg:pt-4 md:pt-4 flex-grow flex flex-col">
+                <div className="mb-1.5 xl:mb-3 lg:mb-3 md:mb-3 sm:mb-3">
+                  <h3 className="text-[11px] xl:text-lg md:text-lg lg:text-lg sm:text-[11px] font-medium text-gray-900 leading-snug">
+                    {truncateText(product.title, 25)}
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                    {truncateText(product.description, 80)}
+                  <p className="text-sm text-gray-500 hidden xl:block mt-1 line-clamp-2">
+                    {truncateText(product.description, 50)}
                   </p>
                 </div>
 
                 <div className="mt-auto">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center">
+                  <div className="flex items-center justify-between xl:mb-3 lg:mb-3 md:mb-3">
+                    <div className="xl:flex sm:hidden hidden items-center">
                       <StarRatings
                         rating={product.rating?.rate || 0}
                         starDimension="16px"
@@ -148,12 +149,12 @@ const FilteredProducts = () => {
                         ({product.rating?.count || 0})
                       </span>
                     </div>
-                    <span className="text-xl font-bold text-gray-900">
+                    <span className="xl:text-xl lg:text-xl md:text-xl sm:text-[14px] text-[14px] font-bold text-gray-900">
                       ${product.price.toFixed(2)}
                     </span>
                   </div>
 
-                  <div className="flex items-center text-sm text-gray-500 mb-4">
+                  <div className="items-center text-sm text-gray-500 xl:mb-4 hidden xl:flex lg:flex md:flex sm:hidden">
                     <span
                       className={`w-2 h-2 rounded-full mr-2 ${
                         product.rating?.count > 0
@@ -165,30 +166,23 @@ const FilteredProducts = () => {
                   </div>
                 </div>
               </div>
+
               <button
-                className="relative cursor-pointer w-full group bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-3.5 px-4 rounded-lg overflow-hidden transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/30"
-                onClick={(e) => {
-                  handleAddtoCartBtn(product, e);
-                }}
+                className="relative cursor-pointer w-full group bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium xl:py-3.5 lg:py-3.5 md:py-3.5 sm:py-1.5 py-1 transition-all duration-300 flex items-center justify-center gap-1"
+                onClick={(e) => handleAddtoCartBtn(product, e)}
               >
                 <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
-
-                <span className="relative group-hover:scale-110 transition-transform duration-300">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                  </svg>
-                </span>
-
-                <span className="relative transform group-hover:-translate-y-0.5 transition-transform duration-300">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3.5 xl:h-5 lg:h-5 md:h-5 sm:h-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                </svg>
+                <span className="text-[12px] xl:text-xl lg:text-xl md:text-xl">
                   Add to Cart
                 </span>
-
-                <span className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-amber-300/30 group-active:border-amber-300/50 transition-all duration-300"></span>
               </button>
             </div>
           ))

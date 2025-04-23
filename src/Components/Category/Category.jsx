@@ -4,17 +4,19 @@ import { useHandleFilteredPrdcts, useUniqueCategories } from "../..";
 function Category() {
   const uniqueCategories = useUniqueCategories();
   const handleFilteredPrdcts = useHandleFilteredPrdcts();
-
-  // Map categories to actual image URLs (replace with your own):
   const categoryImages = {
-    electronics: "/images/categories/electronics.jpg",
-    books: "/images/categories/books.jpg",
-    // …
+    electronics: "public/Images/electronic-gadgets.webp",
+    "men's clothing":
+      "public/Images/MS21LH9-16x9-Startpage-Teaser-1-Week16.avif",
+    "women's clothing": "public/Images/b_wm37330_35316_1_1.avif",
+    jewelery: "public/Images/ER617-Regal-Crown-Engagement-Ring.jpg",
   };
 
   return (
     <>
-      <h1 className="text-4xl text-amber-400 px-6 xl:py-10 lg:py-10 md:py-10 sm:py-10 py-5 font-specific xl:px-20 lg:px-20">Category</h1>
+      <h1 className="text-4xl text-amber-400 px-6 xl:py-10 lg:py-10 md:py-10 sm:py-10 py-5 font-specific xl:px-20 lg:px-20">
+        Category
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-20">
         {uniqueCategories.map((category) => (
