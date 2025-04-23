@@ -2,12 +2,13 @@ import React, { useContext } from "react";
 import QuantityBtn from "../QuantityBtn/QuantityBtn";
 import { productContext } from "../../Contexts/ProductContext";
 import { FaXmark } from "react-icons/fa6";
+import { truncateText } from "../ProductCards/ProductCards";
 export const formatPrice = (price) => {
-    if (typeof price !== "number" || isNaN(price)) {
-      return "$0.00";
-    }
-    return `$${price.toFixed(2)}`;
-  };
+  if (typeof price !== "number" || isNaN(price)) {
+    return "$0.00";
+  }
+  return `$${price.toFixed(2)}`;
+};
 function CartListedprdct() {
   const { listedProducts, setListedPrdcts } = useContext(productContext);
 
@@ -32,7 +33,6 @@ function CartListedprdct() {
   };
 
   // Safe price formatting function
-
 
   if (!listedProducts || listedProducts.length === 0) {
     return (
@@ -61,19 +61,19 @@ function CartListedprdct() {
         return (
           <div
             key={productId}
-            className="relative flex flex-row items-stretch sm:items-center gap-3 p-3 sm:p-4 border border-gray-600 rounded-lg hover:bg-gray-800/50 transition-colors duration-200 group"
+            className="relative flex flex-row items-stretch sm:items-center gap-3 px-2 py-3 sm:px-4 sm:py-4 border border-gray-600 rounded-lg hover:bg-gray-800/50 transition-colors duration-200 group"
           >
             {/* Remove button */}
             <button
               onClick={() => removeListedProdct(productId)}
-              className="absolute top-1 right-1 sm:top-2 sm:right-2 p-1 text-gray-300 hover:text-white transition-colors"
+              className="absolute top-1 right-1 sm:top-2 sm:right-2 px-0.5 text-gray-300 hover:text-white transition-colors"
               aria-label={`Remove ${productName} from cart`}
             >
               <FaXmark className="text-lg" />
             </button>
 
             {/* Product image */}
-            <div className="w-20 h-20 flex-shrink-0">
+            <div className="sm:w-20 w-12 sm:h-20 h-12 flex-shrink-0">
               <img
                 src={productImg || ""}
                 alt={productName || "Product image"}
@@ -88,17 +88,17 @@ function CartListedprdct() {
 
             {/* Product info */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm sm:text-base font-medium text-white truncate">
-                {productName || "Unnamed Product"}
+              <h3 className="text-[12px] sm:text-base font-medium text-white truncate">
+                {truncateText(`${productName || "Unnamed product"}`,40)}
               </h3>
-              <p className="text-xs sm:text-sm text-gray-300">
+              <p className="text-xs mt-1 sm:text-sm text-gray-300">
                 {formatPrice(productPrice)} each
               </p>
             </div>
 
             {/* Quantity controls */}
             <div className="flex items-center justify-between sm:justify-end gap-4">
-              <div className="w-24 sm:w-28">
+              <div className="xl:w-24 lg:w-24 md:w-24 sm:w-24">
                 <QuantityBtn
                   counter={quantity}
                   setCounter={(newQuantity) =>
@@ -110,7 +110,7 @@ function CartListedprdct() {
               </div>
 
               {/* Line total */}
-              <div className="w-16 text-right">
+              <div className="xl:w-16 lg:w-16 md:w-16 sm:w-16 text-right">
                 <p className="text-sm sm:text-base font-semibold text-white">
                   {formatPrice(lineTotal)}
                 </p>

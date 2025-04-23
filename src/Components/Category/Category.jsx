@@ -5,11 +5,10 @@ function Category() {
   const uniqueCategories = useUniqueCategories();
   const handleFilteredPrdcts = useHandleFilteredPrdcts();
   const categoryImages = {
-    electronics: "public/Images/electronic-gadgets.webp",
-    "men's clothing":
-      "public/Images/MS21LH9-16x9-Startpage-Teaser-1-Week16.avif",
-    "women's clothing": "public/Images/b_wm37330_35316_1_1.avif",
-    jewelery: "public/Images/ER617-Regal-Crown-Engagement-Ring.jpg",
+    electronics: "/Images/electronic-gadgets.webp",
+    "men's clothing": "/Images/MS21LH9-16x9-Startpage-Teaser-1-Week16.avif",
+    "women's clothing": "/Images/b_wm37330_35316_1_1.avif",
+    jewelery: "/Images/ER617-Regal-Crown-Engagement-Ring.jpg",
   };
 
   return (

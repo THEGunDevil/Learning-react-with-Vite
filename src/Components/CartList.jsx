@@ -5,6 +5,7 @@ import CartListedprdct from "./Cart/CartListedprdct";
 import { productContext } from "../Contexts/ProductContext";
 import { FaXmark } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
+
 function CartList() {
   const { listedProducts, setListedPrdcts, cartListActive, setCartListActive } =
     useContext(productContext);
@@ -37,7 +38,7 @@ function CartList() {
       aria-modal="true"
       role="dialog"
       aria-label="Shopping cart"
-      className={`fixed top-0 right-0 h-screen z-30 flex flex-col justify-between bg-gray-800 transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 right-0 h-screen z-30 flex flex-col bg-gray-800 transition-all duration-300 ease-in-out ${
         cartListActive
           ? "w-full sm:w-120 opacity-100 translate-x-0"
           : "w-0 opacity-0 translate-x-full"
@@ -62,7 +63,7 @@ function CartList() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto px-4 py-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+      <main className="flex-1 overflow-y-auto px-4 py-2 scrollbar-hide">
         {listedProducts?.length > 0 ? (
           <CartListedprdct />
         ) : (
@@ -88,19 +89,16 @@ function CartList() {
           <div className="grid grid-cols-2 gap-y-2 text-white mb-4">
             <span className="text-gray-300">Items:</span>
             <span className="text-right">{listedProducts.length}</span>
-
             <span className="text-gray-300">Subtotal:</span>
             <span className="text-right">${grandTotal.toFixed(2)}</span>
-
             <span className="text-gray-300">Shipping:</span>
             <span className="text-right">Calculated at checkout</span>
           </div>
-
           <div className="flex flex-col space-y-2">
             <CheckOutBtn />
             <button
               onClick={handleCloseCartList}
-              className="w-full py-2 text-center text-indigo-400 hover:text-indigo-300 transition-colors"
+              className="w-full text-center text-indigo-400 hover:text-indigo-300 transition-colors"
             >
               Continue Shopping
             </button>
