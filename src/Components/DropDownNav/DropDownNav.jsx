@@ -4,7 +4,7 @@ import { FaUserPlus } from "react-icons/fa6";
 import { UserContext } from "../../Contexts/UserContext";
 import { FaHome, FaSignInAlt, FaTachometerAlt, FaUser } from "react-icons/fa";
 
-function DropDownNav() {
+function DropDownNav({isOpen, setIsOpen}) {
   const { user } = useContext(UserContext);
   return (
     <>
@@ -12,6 +12,7 @@ function DropDownNav() {
         <li className="flex hover:bg-gray-100 p-1.5">
           <NavLink
             to="/"
+            onClick={()=>setIsOpen(false)}
             className={({ isActive }) =>
               `flex items-center ${isActive ? "text-amber-500" : ""}`
             }
@@ -23,6 +24,7 @@ function DropDownNav() {
         <li className="flex hover:bg-gray-100 p-1.5">
           <NavLink
             to="/profile"
+            onClick={()=>setIsOpen(false)}
             className={({ isActive }) =>
               `flex items-center ${isActive ? "text-amber-500" : ""}`
             }
@@ -36,7 +38,8 @@ function DropDownNav() {
         ) : (
           <li className="flex hover:bg-gray-100 p-1.5">
             <NavLink
-              to="signin"
+                to="signin"
+                onClick={()=>setIsOpen(false)}
               className={({ isActive }) =>
                 `flex items-center ${isActive ? "text-amber-500" : ""}`
               }
@@ -50,6 +53,7 @@ function DropDownNav() {
         <li className="flex hover:bg-gray-100 p-1.5">
           <NavLink
             to="register"
+            onClick={()=>setIsOpen(false)}
             className={({ isActive }) =>
               `flex items-center ${isActive ? "text-amber-500" : ""}`
             }
@@ -62,6 +66,7 @@ function DropDownNav() {
           <li className="flex hover:bg-gray-100 p-1.5">
             <NavLink
               to="/dashboard"
+              onClick={()=>setIsOpen(false)}
               className={({ isActive }) =>
                 `flex items-center ${isActive ? "text-amber-500" : ""}`
               }

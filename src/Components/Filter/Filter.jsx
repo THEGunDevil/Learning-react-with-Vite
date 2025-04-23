@@ -1,7 +1,7 @@
 import React from "react";
 import FetchData from "../FetchData/FetchData";
 import { useHandleFilteredPrdcts, useUniqueCategories } from "../..";
-function Filter() {
+function Filter({ dropFilterBox, setDropFilterBox }) {
   FetchData();
 
   const uniqueCategories = useUniqueCategories();
@@ -12,7 +12,10 @@ function Filter() {
       {uniqueCategories?.map((category) => (
         <span
           key={category}
-          onClick={() => handleFilteredPrdcts(category)}
+          onClick={() => {
+            handleFilteredPrdcts(category);
+            setDropFilterBox(false);
+          }}
           className="
             inline-block 
             px-4 py-1.5

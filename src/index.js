@@ -1,7 +1,6 @@
-import { useContext, useCallback } from "react";
+import { useContext, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { productContext } from "./Contexts/ProductContext";
-
 export const useUniqueCategories = () => {
   const { products } = useContext(productContext);
   return [...new Set(products?.map((p) => p.category))];
@@ -10,7 +9,6 @@ export const useUniqueCategories = () => {
 export const useHandleFilteredPrdcts = () => {
   const navigate = useNavigate();
   const { products } = useContext(productContext);
-
   const handleFilteredPrdcts = useCallback((category) => {
     const filtered = products.filter(
       (product) => product.category === category

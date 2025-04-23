@@ -14,7 +14,7 @@ function Category() {
 
   return (
     <>
-      <h1 className="text-4xl text-amber-400 px-6 py-16 font-specific xl:px-20 lg:px-20">Category</h1>
+      <h1 className="text-4xl text-amber-400 px-6 xl:py-10 lg:py-10 md:py-10 sm:py-10 py-5 font-specific xl:px-20 lg:px-20">Category</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-20">
         {uniqueCategories.map((category) => (

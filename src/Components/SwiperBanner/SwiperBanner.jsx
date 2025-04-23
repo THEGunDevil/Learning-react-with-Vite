@@ -22,7 +22,7 @@ function SwiperBanner() {
 
 
   return (
-    <div className="mt-6">
+    <div className="mt-5">
       {featuredProducts.length > 0 && (
         <Swiper
           speed={1000}
@@ -37,7 +37,7 @@ function SwiperBanner() {
           {featuredProducts.map((p) => (
             <SwiperSlide key={p.id}>
               <div 
-                className="h-120 bg-gray-100 flex items-center justify-center cursor-pointer"
+                className="h-70 sm:h-80 md:h-95 lg:h-110 xl:h-120 bg-gray-100 flex items-center justify-center cursor-pointer"
                 onClick={() => handleProductDetails(p.id)}
               >
                 <img

@@ -10,13 +10,14 @@ import { HiOutlineFilter } from "react-icons/hi";
 import Filter from "./Filter/Filter";
 import { productContext } from "../Contexts/ProductContext";
 import FetchProdctDta from "./FetchData/FetchProdctDta";
+
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropSearchBox, setDropSearchBox] = useState(false);
   const [dropFilterBox, setDropFilterBox] = useState(false);
   const [InputTxt, setInputTxt] = useState("");
-  const navigate = useNavigate()
-  const { products, setProductDets} = useContext(productContext);
+  const navigate = useNavigate();
+  const { products, setProductDets } = useContext(productContext);
   const handleNavDropDwn = () => {
     setIsOpen(!isOpen);
   };
@@ -32,7 +33,7 @@ const Header = () => {
   const handleProductDetails = async (id) => {
     await FetchProdctDta(id, setProductDets);
     navigate(`/products/${id}`);
-    setInputTxt("")
+    setInputTxt("");
   };
   return (
     <>
@@ -91,7 +92,7 @@ const Header = () => {
           isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
         }`}
       >
-        <DropDownNav />
+        <DropDownNav isOpen={isOpen} setIsOpen={setIsOpen} />
       </section>
       <section
         className={`fixed top-18 left-0 w-full xl:hidden lg:hidden md:hidden sm:hidden h-15 flex justify-center items-center bg-white transition-all duration-700 ease-in-out z-10 shadow-lg ${
@@ -111,7 +112,10 @@ const Header = () => {
             : "opacity-0 -translate-y-full"
         }`}
       >
-        <Filter />
+        <Filter
+          dropFilterBox={dropFilterBox}
+          setDropFilterBox={setDropFilterBox}
+        />
       </section>
       {InputTxt.length > 0 && (
         <div className="fixed top-35 w-[360px] bg-white xl:top-20 xl:w-4xl lg:top-20 lg:w-3xl md:top-20 md:w-xl sm:top-20 sm:w-md left-1/2 -translate-x-1/2  rounded-md shadow-lg z-2">
@@ -120,7 +124,10 @@ const Header = () => {
               filteredData.map((item) => (
                 <li
                   key={item.id}
-                  onClick={() => handleProductDetails(item.id)}
+                  onClick={() => {
+                    handleProductDetails(item.id)
+                    setDropSearchBox(false)
+                  }}
                   className="h-fit hover:bg-gray-200 transition-colors duration-300 py-1 flex items-center justify-between shadow cursor-pointer px-2"
                 >
                   <div className="flex items-center gap-3.5">
