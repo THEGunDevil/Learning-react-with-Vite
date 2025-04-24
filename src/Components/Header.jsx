@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import BagBtn from "./BagBtn/BagBtn";
 import CartList from "./CartList";
 import { FiMenu, FiSearch } from "react-icons/fi";
-import DropDownNav from "./DropDownNav/DropDownNav";
+import DropDownNav from "./Navigations/DropDownNav";
 import { HiOutlineFilter } from "react-icons/hi";
 import Filter from "./Filter/Filter";
 import { productContext } from "../Contexts/ProductContext";

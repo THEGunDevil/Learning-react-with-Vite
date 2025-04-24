@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { lazy, useContext } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import { productContext } from "../../Contexts/ProductContext";
@@ -6,7 +6,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { useNavigate } from "react-router-dom";
 import FetchProdctDta from "../FetchData/FetchProdctDta";
-
 function SwiperBanner() {
   const { products, setProductDets } = useContext(productContext);
   const navigate = useNavigate();
@@ -23,7 +22,7 @@ function SwiperBanner() {
 
   return (
     <div className="mt-5">
-      {featuredProducts.length > 0 && (
+      {featuredProducts?.length > 0 && (
         <Swiper
           speed={1000}
           spaceBetween={10}
@@ -37,6 +36,7 @@ function SwiperBanner() {
           {featuredProducts.map((p) => (
             <SwiperSlide key={p.id}>
               <div 
+                
                 className="h-70 sm:h-80 md:h-95 lg:h-110 xl:h-120 bg-gray-100 flex items-center justify-center cursor-pointer"
                 onClick={() => handleProductDetails(p.id)}
               >

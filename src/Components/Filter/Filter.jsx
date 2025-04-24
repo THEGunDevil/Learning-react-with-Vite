@@ -1,7 +1,7 @@
 import React from "react";
 import FetchData from "../FetchData/FetchData";
 import { useHandleFilteredPrdcts, useUniqueCategories } from "../..";
-function Filter({ dropFilterBox, setDropFilterBox }) {
+function Filter({ setDropFilterBox }) {
   FetchData();
 
   const uniqueCategories = useUniqueCategories();

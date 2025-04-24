@@ -16,7 +16,7 @@ import { UserContext } from "../../Contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import MyProducts from "../MyProducts/MyProducts";
 import { db } from "../../Firebase";
-import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import {
   getAuth,
   deleteUser,
@@ -39,7 +39,7 @@ const ConfirmDeletePopup = ({ onConfirm, onCancel }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
       role="dialog"
       aria-labelledby="delete-account-title"
       aria-describedby="delete-account-desc"
@@ -47,14 +47,21 @@ const ConfirmDeletePopup = ({ onConfirm, onCancel }) => {
       tabIndex={0}
     >
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <h3 id="delete-account-title" className="text-lg font-semibold text-gray-800 mb-4">
+        <h3
+          id="delete-account-title"
+          className="text-lg font-semibold text-gray-800 mb-4"
+        >
           Delete Account
         </h3>
         <p id="delete-account-desc" className="text-sm text-gray-600 mb-4">
-          Are you sure you want to permanently delete your account? This action cannot be undone.
+          Are you sure you want to permanently delete your account? This action
+          cannot be undone.
         </p>
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Enter your password to confirm
           </label>
           <input
@@ -68,7 +75,9 @@ const ConfirmDeletePopup = ({ onConfirm, onCancel }) => {
             className="w-full p-2 border rounded focus:ring-indigo-500 focus:border-indigo-500"
             placeholder="Password"
           />
-          {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>}
+          {passwordError && (
+            <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+          )}
         </div>
         <div className="flex justify-end space-x-4">
           <button
@@ -90,7 +99,7 @@ const ConfirmDeletePopup = ({ onConfirm, onCancel }) => {
 };
 
 const Profile = () => {
-  const { user, setUser, signout } = useContext(UserContext);
+  const { user, signout, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const auth = getAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -103,34 +112,50 @@ const Profile = () => {
   });
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+
+  // Phone number regex (US formats: 123-456-7890, (123) 456-7890, 1234567890, etc.)
+  const phoneRegex = /^\+?1?\s*(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/;
 
   useEffect(() => {
-    if (user?.uid) {
-      const fetchData = async () => {
-        const docSnap = await getDoc(doc(db, "users", user.uid));
-        const userData = docSnap.data();
-        setUser(userData);
-        setFormData({
-          firstname: userData.firstname || "",
-          lastname: userData.lastname || "",
-          phone: userData.phone || "",
-          address: userData.address || "",
-        });
-      };
-      fetchData();
+    if (user) {
+      // Initialize formData with user data from context
+      setFormData({
+        firstname: user.firstname || "",
+        lastname: user.lastname || "",
+        phone: user.phone || "",
+        address: user.address || "",
+      });
     }
-  }, [user?.uid, setUser]);
+  }, [user]);
 
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    // Validate phone number in real-time
+    if (name === "phone") {
+      if (value && !phoneRegex.test(value)) {
+        setPhoneError("Please enter a valid phone number (e.g., 123-456-7890)");
+      } else {
+        setPhoneError("");
+      }
+    }
   };
 
   const handleSaveChanges = async () => {
     if (!formData.firstname || !formData.lastname) {
-      toast.error("First name and last name are required",{position:"bottom-center"});
+      toast.error("First name and last name are required", {
+        position: "bottom-center",
+      });
+      return;
+    }
+
+    if (formData.phone && !phoneRegex.test(formData.phone)) {
+      setPhoneError("Please enter a valid phone number (e.g., 123-456-7890)");
       return;
     }
 
@@ -138,11 +163,15 @@ const Profile = () => {
     try {
       const userRef = doc(db, "users", user.uid);
       await updateDoc(userRef, formData);
+      // Update user context with new data
       setUser({ ...user, ...formData });
+      toast.success("Profile updated successfully!", {
+        position: "top-center",
+      });
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile: ", error);
-      alert("Failed to update profile");
+      toast.error("Failed to update profile", { position: "bottom-center" });
     } finally {
       setLoading(false);
     }
@@ -160,6 +189,7 @@ const Profile = () => {
       address: user.address || "",
     });
     setIsEditing(false);
+    setPhoneError("");
   };
 
   const handleDeleteAccount = async (password) => {
@@ -181,13 +211,15 @@ const Profile = () => {
       await deleteDoc(doc(db, "users", user.uid));
 
       // Clear user context and redirect
-      setUser(null);
       navigate("/");
-      toast.success("Your account has been successfully deleted.", { position: "top-center" });
+      toast.success("Your account has been successfully deleted.", {
+        position: "top-center",
+      });
     } catch (error) {
-      console.error("Error deleting account:", error);
       if (error.code === "auth/wrong-password") {
-        toast.error("Incorrect password. Please try again.", { position: "bottom-center" });
+        toast.error("Incorrect password. Please try again.", {
+          position: "bottom-center",
+        });
       } else if (error.code === "auth/requires-recent-login") {
         toast.error(
           "Your session has expired. Please sign out and sign back in to delete your account.",
@@ -222,14 +254,14 @@ const Profile = () => {
                             name="firstname"
                             value={formData.firstname}
                             onChange={handleInputChange}
-                            className="w-9/12 p-2 border rounded text-white"
+                            className="w-9/12 p-2 border rounded text-white placeholder-white focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="First Name"
                           />
                           <input
                             name="lastname"
                             value={formData.lastname}
                             onChange={handleInputChange}
-                            className="w-9/12 p-2 border rounded text-white"
+                            className="w-9/12 p-2 border rounded text-white placeholder-white focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Last Name"
                           />
                         </div>
@@ -240,13 +272,15 @@ const Profile = () => {
                       )}
                       <p className="text-indigo-200 text-[13px] sm:text-lg mt-1">
                         Member since{" "}
-                        {user?.createdAt?.toDate().toLocaleString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {user?.createdAt && typeof user.createdAt.toDate === "function"
+                          ? user.createdAt.toDate().toLocaleString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : "Unknown"}
                       </p>
                     </div>
                   </div>
@@ -257,10 +291,11 @@ const Profile = () => {
                         className="flex items-center space-x-1 bg-indigo-600 hover:bg-indigo-800 sm:px-4 px-2.5 py-2 rounded-md transition-colors"
                       >
                         <FaPlusCircle className="text-sm" />
-                        <span className="sm:text-lg text-[13px]">Add Product</span>
+                        <span className="sm:text-lg text-[13px]">
+                          Add Product
+                        </span>
                       </button>
                     )}
-
                     {isEditing ? (
                       <div className="flex gap-2">
                         <button
@@ -269,7 +304,9 @@ const Profile = () => {
                           className="flex items-center space-x-1 bg-green-600 hover:bg-green-800 sm:px-4 px-2.5 py-2 rounded-md transition-colors"
                         >
                           <FaSave className="text-sm" />
-                          <span className="sm:text-lg text-[13px]">{loading ? "Saving..." : "Save"}</span>
+                          <span className="sm:text-lg text-[13px]">
+                            {loading ? "Saving..." : "Save"}
+                          </span>
                         </button>
                         <button
                           onClick={handleCancelEdit}
@@ -285,20 +322,20 @@ const Profile = () => {
                         className="flex items-center space-x-1 bg-indigo-600 hover:bg-indigo-800 sm:px-4 px-2.5 py-2 rounded-md transition-colors"
                       >
                         <FaEdit className="text-sm" />
-                        <span className="sm:text-lg text-[13px]">Edit Profile</span>
+                        <span className="sm:text-lg text-[13px]">
+                          Edit Profile
+                        </span>
                       </button>
                     )}
                   </div>
                 </div>
               </div>
-
               <div className="px-4 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                       Personal Information
                     </h2>
-
                     <div className="flex items-center space-x-3">
                       <FaEnvelope className="text-gray-500" />
                       <div>
@@ -306,19 +343,34 @@ const Profile = () => {
                         <p className="font-medium">{user?.email}</p>
                       </div>
                     </div>
-
                     <div className="flex items-center space-x-3">
                       <FaPhone className="text-gray-500" />
                       <div className="flex-1">
                         <p className="text-sm text-gray-500">Phone</p>
                         {isEditing ? (
-                          <input
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                            className="w-full p-2 border rounded"
-                            placeholder="Phone number"
-                          />
+                          <div>
+                            <input
+                              name="phone"
+                              value={formData.phone}
+                              onChange={handleInputChange}
+                              className={`w-full p-2 border rounded no-spin focus:ring-indigo-500 focus:border-indigo-500 ${
+                                phoneError ? "border-red-500" : ""
+                              }`}
+                              placeholder="Phone number (e.g., 123-456-7890)"
+                              type="text"
+                              aria-describedby="phoneError"
+                              aria-invalid={phoneError ? "true" : "false"}
+                            />
+                            {phoneError && (
+                              <p
+                                id="phoneError"
+                                className="text-sm text-red-500 mt-1"
+                                role="alert"
+                              >
+                                {phoneError}
+                              </p>
+                            )}
+                          </div>
                         ) : (
                           <p className="font-medium">
                             {user?.phone || "Not provided"}
@@ -326,7 +378,6 @@ const Profile = () => {
                         )}
                       </div>
                     </div>
-
                     <div className="flex items-center space-x-3">
                       <FaMapMarkerAlt className="text-gray-500" />
                       <div className="flex-1">
@@ -336,7 +387,7 @@ const Profile = () => {
                             name="address"
                             value={formData.address}
                             onChange={handleInputChange}
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border rounded focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Address"
                           />
                         ) : (
@@ -346,7 +397,6 @@ const Profile = () => {
                         )}
                       </div>
                     </div>
-
                     {!isEditing && (
                       <div className="flex items-center space-x-3">
                         <FaSignOutAlt className="text-gray-500" />
@@ -359,7 +409,6 @@ const Profile = () => {
                       </div>
                     )}
                   </div>
-
                   <div className="space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
                       Account Settings
@@ -371,7 +420,10 @@ const Profile = () => {
                       <p className="text-sm text-gray-500 mb-3">
                         Last changed 3 months ago
                       </p>
-                      <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                      <button
+                        onClick={() => navigate("/changepassword")}
+                        className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                      >
                         Change Password
                       </button>
                     </div>
@@ -396,7 +448,6 @@ const Profile = () => {
                     </div>
                   </div>
                 </div>
-
                 <div className="mt-8 border-t pt-6">
                   <h2 className="text-lg font-semibold text-red-600 mb-4">
                     Danger Zone
@@ -422,7 +473,7 @@ const Profile = () => {
               </div>
             </section>
           </div>
-          <MyProducts />
+          {user?.roles === "Author" && <MyProducts />}
           {showDeletePopup && (
             <ConfirmDeletePopup
               onConfirm={handleDeleteAccount}

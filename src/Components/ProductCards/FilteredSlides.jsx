@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { productContext } from "../../Contexts/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,22 +10,34 @@ import { truncateText } from "./ProductCards";
 import FetchProdctDta from "../FetchData/FetchProdctDta";
 
 function FilteredSlides({ category, title }) {
-  const { products, setProductDets, setListedPrdcts } =
-    useContext(productContext);
+  const { products, setProductDets, setListedPrdcts } = useContext(productContext);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const navigate = useNavigate();
+  const swiperRef = useRef(null);
+
   const handleProductDetails = async (id) => {
     await FetchProdctDta(id, setProductDets);
     navigate(`/products/${id}`);
   };
+
   useEffect(() => {
     if (category && products?.length) {
-      const filtered = products.filter(
-        (product) => product.category === category
+      const filtered = products.filter((product) => product.category === category);
+      setFilteredProducts((prev) =>
+        JSON.stringify(prev) !== JSON.stringify(filtered) ? filtered : prev
       );
-      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts([]);
     }
   }, [category, products]);
+
+  useEffect(() => {
+    return () => {
+      if (swiperRef.current && swiperRef.current.destroy) {
+        swiperRef.current.destroy(true, true);
+      }
+    };
+  }, []);
 
   const handleAddtoCartBtn = (product, e) => {
     e.stopPropagation();
@@ -59,16 +71,16 @@ function FilteredSlides({ category, title }) {
           spaceBetween={30}
           slidesPerView={2.7}
           breakpoints={{
-            370:{slidesPerView:2.8},
-            420: {slidesPerView:3},
-            560: {slidesPerView: 4},
-            640:{slidesPerView: 3 },
+            370: { slidesPerView: 2.8 },
+            420: { slidesPerView: 3 },
+            560: { slidesPerView: 4 },
+            640: { slidesPerView: 3 },
             1024: { slidesPerView: 3 },
             1280: { slidesPerView: 4 },
           }}
           modules={[Navigation]}
-          navigation
-          loop
+          navigation={true}
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
           className="mt-5"
         >
           {filteredProducts.map((product) => (
@@ -137,7 +149,7 @@ function FilteredSlides({ category, title }) {
                 >
                   <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns="http://www.w3.orgovernance/2000/svg"
                     className="h-3.5 xl:h-5 lg:h-5 md:h-5 sm:h-5"
                     viewBox="0 0 20 20"
                     fill="currentColor"

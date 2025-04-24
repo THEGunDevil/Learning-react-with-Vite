@@ -3,20 +3,24 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./Components/Layout.jsx";
-import Home from "./Components/Home/Home.jsx";
 import { CartProvider } from "react-use-cart";
 import RegistrationPage from "./Components/RegistrationPage/RegistrationPage.jsx";
 import UserProvider from "./Contexts/UserContext.jsx";
 import SignInPage from "./Components/SignInPage/SignInPage.jsx";
 import { ToastContainer } from "react-toastify";
-import FilteredProducts from "./Components/FilteredProducts.jsx";
-import Dashboard from "./Components/Dashboard/Dashboard.jsx";
 import AddProduct from "./Components/AddProduct/AddProduct.jsx";
 import ProductProvider from "./Contexts/ProductContext.jsx";
-Dashboard;
+import ChangePassword from "./Components/ChangePassword/ChangePassword.jsx";
+import ErrorBoundary from "./Components/ErrorBoundary.jsx"
+
 function RouterWrapper() {
-  const Cart = lazy(() => import("./Components/ProductDetails.jsx"));
+  const ProductDets = lazy(() => import("./Components/ProductDetails.jsx"));
   const Profile = lazy(() => import("./Components/Profile/Profile.jsx"));
+  const Home = lazy(() => import("./Components/Home/Home.jsx"));
+  const FilteredProducts = lazy(() =>
+    import("./Components/FilteredProducts.jsx")
+  );
+  const Dashboard = lazy(() => import("./Components/Dashboard/Dashboard.jsx"));
   const router = createBrowserRouter([
     {
       path: "/",
@@ -37,7 +41,7 @@ function RouterWrapper() {
           ),
         },
         {
-          path: "profile",
+          path: "/profile",
           element: (
             <Suspense
               fallback={
@@ -51,7 +55,7 @@ function RouterWrapper() {
           ),
         },
         {
-          path: "product",
+          path: "/product",
           element: (
             <Suspense
               fallback={
@@ -60,12 +64,12 @@ function RouterWrapper() {
                 </div>
               }
             >
-              <Cart />
+              <ProductDets />
             </Suspense>
           ),
         },
         {
-          path: "products/:productId",
+          path: "/products/:productId",
           element: (
             <Suspense
               fallback={
@@ -74,12 +78,12 @@ function RouterWrapper() {
                 </div>
               }
             >
-              <Cart />
+              <ProductDets />
             </Suspense>
           ),
         },
         {
-          path: "filteredprdcts",
+          path: "/filteredprdcts",
           element: (
             <Suspense
               fallback={
@@ -93,15 +97,19 @@ function RouterWrapper() {
           ),
         },
         {
-          path: "register",
+          path: "/register",
           element: <RegistrationPage />,
         },
         {
-          path: "signin",
+          path: "/signin",
           element: <SignInPage />,
         },
         {
-          path: "dashboard",
+          path: "/changepassword",
+          element: <ChangePassword />,
+        },
+        {
+          path: "/dashboard",
           element: (
             <Suspense
               fallback={
@@ -115,7 +123,7 @@ function RouterWrapper() {
           ),
         },
         {
-          path: "addproduct",
+          path: "/addproduct",
           element: (
             <Suspense
               fallback={
@@ -140,10 +148,12 @@ createRoot(document.getElementById("root")).render(
     <UserProvider>
       <ProductProvider>
         <CartProvider>
-          <RouterWrapper />
+          <ErrorBoundary fallback={<h1>Something broke!</h1>}>
+            <RouterWrapper />
+            <ToastContainer />
+          </ErrorBoundary>
         </CartProvider>
       </ProductProvider>
     </UserProvider>
-    <ToastContainer />
   </StrictMode>
 );
