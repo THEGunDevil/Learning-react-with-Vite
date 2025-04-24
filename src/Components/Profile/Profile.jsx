@@ -16,12 +16,85 @@ import { UserContext } from "../../Contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import MyProducts from "../MyProducts/MyProducts";
 import { db } from "../../Firebase";
-import { doc,getDoc, updateDoc} from "firebase/firestore";
+import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import {
+  getAuth,
+  deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from "firebase/auth";
+import { toast } from "react-toastify";
+
+const ConfirmDeletePopup = ({ onConfirm, onCancel }) => {
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const handleConfirm = () => {
+    if (!password) {
+      setPasswordError("Password is required");
+      return;
+    }
+    onConfirm(password);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      role="dialog"
+      aria-labelledby="delete-account-title"
+      aria-describedby="delete-account-desc"
+      onKeyDown={(e) => e.key === "Escape" && onCancel()}
+      tabIndex={0}
+    >
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+        <h3 id="delete-account-title" className="text-lg font-semibold text-gray-800 mb-4">
+          Delete Account
+        </h3>
+        <p id="delete-account-desc" className="text-sm text-gray-600 mb-4">
+          Are you sure you want to permanently delete your account? This action cannot be undone.
+        </p>
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            Enter your password to confirm
+          </label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPasswordError("");
+            }}
+            className="w-full p-2 border rounded focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder="Password"
+          />
+          {passwordError && <p className="text-sm text-red-500 mt-1">{passwordError}</p>}
+        </div>
+        <div className="flex justify-end space-x-4">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Profile = () => {
   const { user, setUser, signout } = useContext(UserContext);
   const navigate = useNavigate();
+  const auth = getAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -29,6 +102,7 @@ const Profile = () => {
     address: "",
   });
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     if (user?.uid) {
@@ -56,7 +130,7 @@ const Profile = () => {
 
   const handleSaveChanges = async () => {
     if (!formData.firstname || !formData.lastname) {
-      alert("First name and last name are required");
+      toast.error("First name and last name are required",{position:"bottom-center"});
       return;
     }
 
@@ -88,21 +162,62 @@ const Profile = () => {
     setIsEditing(false);
   };
 
+  const handleDeleteAccount = async (password) => {
+    setDeleteLoading(true);
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error("No user is signed in.");
+      }
+
+      // Re-authenticate the user
+      const credential = EmailAuthProvider.credential(user.email, password);
+      await reauthenticateWithCredential(currentUser, credential);
+
+      // Delete Firebase Authentication account
+      await deleteUser(currentUser);
+
+      // Delete user data from Firestore
+      await deleteDoc(doc(db, "users", user.uid));
+
+      // Clear user context and redirect
+      setUser(null);
+      navigate("/");
+      toast.success("Your account has been successfully deleted.", { position: "top-center" });
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      if (error.code === "auth/wrong-password") {
+        toast.error("Incorrect password. Please try again.", { position: "bottom-center" });
+      } else if (error.code === "auth/requires-recent-login") {
+        toast.error(
+          "Your session has expired. Please sign out and sign back in to delete your account.",
+          { position: "bottom-center" }
+        );
+        navigate("/signin");
+      } else {
+        toast.error("Failed to delete account", { position: "bottom-center" });
+      }
+    } finally {
+      setDeleteLoading(false);
+      setShowDeletePopup(false);
+    }
+  };
+
   return (
     <>
       {user ? (
         <section className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <section className="bg-white shadow rounded-lg overflow-hidden">
-              <div className="bg-indigo-700 px-6 py-8 text-white">
+              <div className="bg-indigo-700 px-4 py-6 text-white">
                 <div className="lg:flex block items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="h-20 w-20 rounded-full bg-indigo-600 flex items-center justify-center">
+                  <div className="flex items-center space-x-2 sm:space-x-4">
+                    <div className="sm:h-20 sm:w-20 h-17 w-17 rounded-full bg-indigo-600 flex items-center justify-center">
                       <FaUser className="text-3xl" />
                     </div>
                     <div>
                       {isEditing ? (
-                        <div className=" sm:flex-row flex flex-col gap-2">
+                        <div className="sm:flex-row flex flex-col gap-2">
                           <input
                             name="firstname"
                             value={formData.firstname}
@@ -119,11 +234,11 @@ const Profile = () => {
                           />
                         </div>
                       ) : (
-                        <h1 className="text-2xl font-bold">
+                        <h1 className="text-xl font-bold">
                           {user?.firstname} {user?.lastname}
                         </h1>
                       )}
-                      <p className="text-indigo-200">
+                      <p className="text-indigo-200 text-[13px] sm:text-lg mt-1">
                         Member since{" "}
                         {user?.createdAt?.toDate().toLocaleString("en-US", {
                           year: "numeric",
@@ -139,10 +254,10 @@ const Profile = () => {
                     {user?.roles === "Author" && (
                       <button
                         onClick={() => navigate("/addproduct")}
-                        className="flex items-center space-x-1 bg-indigo-600 hover:bg-indigo-800 px-4 py-2 rounded-md transition-colors"
+                        className="flex items-center space-x-1 bg-indigo-600 hover:bg-indigo-800 sm:px-4 px-2.5 py-2 rounded-md transition-colors"
                       >
                         <FaPlusCircle className="text-sm" />
-                        <span>Add Product</span>
+                        <span className="sm:text-lg text-[13px]">Add Product</span>
                       </button>
                     )}
 
@@ -151,33 +266,33 @@ const Profile = () => {
                         <button
                           onClick={handleSaveChanges}
                           disabled={loading}
-                          className="flex items-center space-x-1 bg-green-600 hover:bg-green-800 px-4 py-2 rounded-md transition-colors"
+                          className="flex items-center space-x-1 bg-green-600 hover:bg-green-800 sm:px-4 px-2.5 py-2 rounded-md transition-colors"
                         >
                           <FaSave className="text-sm" />
-                          <span>{loading ? "Saving..." : "Save"}</span>
+                          <span className="sm:text-lg text-[13px]">{loading ? "Saving..." : "Save"}</span>
                         </button>
                         <button
                           onClick={handleCancelEdit}
-                          className="flex items-center space-x-1 bg-gray-600 hover:bg-gray-800 px-4 py-2 rounded-md transition-colors"
+                          className="flex items-center space-x-1 bg-gray-600 hover:bg-gray-800 sm:px-4 px-2.5 py-2 rounded-md transition-colors"
                         >
                           <FaTimes className="text-sm" />
-                          <span>Cancel</span>
+                          <span className="sm:text-lg text-[13px]">Cancel</span>
                         </button>
                       </div>
                     ) : (
                       <button
                         onClick={() => setIsEditing(true)}
-                        className="flex items-center space-x-1 bg-indigo-600 hover:bg-indigo-800 px-4 py-2 rounded-md transition-colors"
+                        className="flex items-center space-x-1 bg-indigo-600 hover:bg-indigo-800 sm:px-4 px-2.5 py-2 rounded-md transition-colors"
                       >
                         <FaEdit className="text-sm" />
-                        <span>Edit Profile</span>
+                        <span className="sm:text-lg text-[13px]">Edit Profile</span>
                       </button>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="px-6 py-8">
+              <div className="px-4 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <h2 className="text-lg font-semibold text-gray-800 border-b pb-2">
@@ -295,15 +410,25 @@ const Profile = () => {
                         Once deleted, all your data will be permanently lost.
                       </p>
                     </div>
-                    <button className="mt-3 cursor-pointer sm:mt-0 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors">
+                    <button
+                      onClick={() => setShowDeletePopup(true)}
+                      disabled={deleteLoading}
+                      className="mt-3 cursor-pointer sm:mt-0 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-medium transition-colors disabled:bg-red-400"
+                    >
                       Delete Account
                     </button>
                   </div>
                 </div>
               </div>
             </section>
-          </div>{" "}
+          </div>
           <MyProducts />
+          {showDeletePopup && (
+            <ConfirmDeletePopup
+              onConfirm={handleDeleteAccount}
+              onCancel={() => setShowDeletePopup(false)}
+            />
+          )}
         </section>
       ) : (
         <section className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
