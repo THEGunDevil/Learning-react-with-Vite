@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { FaUser, FaUserPlus } from "react-icons/fa6";
 import { NavLink } from "react-router-dom";
 import { UserContext } from "../../Contexts/UserContext";

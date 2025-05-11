@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import  { useContext, useEffect, useState, useRef } from "react";
 import { productContext } from "../../Contexts/ProductContext";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -79,7 +79,6 @@ function FilteredSlides({ category, title }) {
             1280: { slidesPerView: 4 },
           }}
           modules={[Navigation]}
-          navigation={true}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
           className="mt-5"
         >

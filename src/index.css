@@ -1,10 +1,10 @@
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Big+Shoulders:opsz,wght@10..72,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Big+Shoulders:opsz,wght@10..72,100..900&family=Playwrite+HU:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Big+Shoulders:opsz,wght@10..72,100..900&family=Playwrite+HU:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @theme {
   --font-display: "Satoshi", "sans-serif";
   --font-secondary: "Anton";
-  --font-specific:"Bebas Neue";
+  --font-specific: "Bebas Neue";
   --breakpoint-3xl: 120rem;
   --color-avocado-100: oklch(0.99 0 0);
   --color-avocado-200: oklch(0.98 0.04 113.22);
@@ -16,19 +16,21 @@
   --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
 }
 
-
-@layer utilities{
+@layer utilities {
   .no-cancel-btn::-webkit-search-cancel-button {
     display: none;
   }
-  
-  .scrollbar-hide::-webkit-scrollbar {
-  display: none;
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    display: none !important;
   }
-  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   .scrollbar-hide {
-  -ms-overflow-style: none;  
-  scrollbar-width: none; 
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   .no-spin::-webkit-inner-spin-button,
   .no-spin::-webkit-outer-spin-button {
@@ -39,4 +41,3 @@
     -moz-appearance: textfield; /* For Firefox */
   }
 }
-

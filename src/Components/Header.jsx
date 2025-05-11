@@ -39,7 +39,7 @@ const Header = () => {
     <>
       <nav className="fixed top-0 left-0 right-0 z-40 flex font-secondary items-center xl:px-20 md:px-6 lg:px-20 sm:px-6 px-4 justify-between h-18 shadow w-full bg-white">
         <div className="text-4xl font-extrabold">
-          <NavLink to="/">LoGo.</NavLink>
+          <NavLink to="/"><img src="Logo/ChatGPT Image May 12, 2025, 12_53_47 AM.png" alt="Logo." className="h-13 w-13 rounded-md" /></NavLink>
         </div>
         <button
           onClick={handleFilterDropDwn}
