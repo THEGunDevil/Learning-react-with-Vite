@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "react-toastify";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import { db, storage } from "../../Firebase";
-import { serverTimestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 function AddProduct() {
   const auth = getAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+
   const [product, setProduct] = useState({
     title: "",
     price: 0.0,
@@ -19,6 +20,7 @@ function AddProduct() {
     stock: 0,
     customCategory: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
@@ -27,7 +29,7 @@ function AddProduct() {
     const { name, value } = e.target;
     setProduct((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "stock" ? parseInt(value) : value,
     }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
@@ -50,21 +52,18 @@ function AddProduct() {
     }
     if (!product.image) newErrors.image = "Product image is required";
     if (product.stock < 0) newErrors.stock = "Stock must be 0 or greater";
-    console.log("Validation errors:", newErrors);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("handleSubmit called");
     if (!validateForm()) {
       toast.error("Please fill all required fields correctly.", { position: "bottom-center" });
       return;
     }
 
     const user = auth.currentUser;
-    console.log("Current user:", user);
     if (!user) {
       toast.error("You must be signed in to add a product.", { position: "bottom-center" });
       navigate("/signin");
@@ -76,12 +75,11 @@ function AddProduct() {
 
     try {
       let imageUrl = "";
+
       if (product.image) {
-        console.log("Uploading image:", product.image.name);
         const imageRef = ref(storage, `product-images/${Date.now()}-${product.image.name}`);
         await uploadBytes(imageRef, product.image);
-        imageUrl = await getDownloadURL(imageRef);
-        console.log("Image uploaded, URL:", imageUrl);
+        imageUrl = await getDownloadURL(imageRef); // ✅ No CORS issue here
       }
 
       const payload = {
@@ -89,13 +87,12 @@ function AddProduct() {
         price: parseFloat(product.price),
         description: product.description.trim(),
         category: product.category === "other" ? product.customCategory.trim() : product.category,
-        stock: parseInt(product.stock) || 0,
+        stock: parseInt(product.stock),
         image: imageUrl,
         userId: user.uid,
         createdAt: serverTimestamp(),
       };
 
-      console.log("Adding product to Firestore:", payload);
       await addDoc(collection(db, "products"), payload);
 
       toast.success("Product added successfully!", { position: "top-center" });
@@ -111,16 +108,12 @@ function AddProduct() {
         customCategory: "",
       });
       setErrors({});
+      fileInputRef.current.value = "";
     } catch (error) {
-      console.error("Error adding product:", error.code, error.message);
       if (error.code === "storage/unauthorized") {
         toast.error("You don't have permission to upload images. Check storage rules.", {
           position: "bottom-center",
         });
-      } else if (error.code === "storage/canceled") {
-        toast.error("Image upload was canceled.", { position: "bottom-center" });
-      } else if (error.code === "permission-denied") {
-        toast.error("You don't have permission to add products.", { position: "bottom-center" });
       } else {
         toast.error(`Failed to add product: ${error.message}`, { position: "bottom-center" });
       }
@@ -138,11 +131,9 @@ function AddProduct() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         <div>
-          <label htmlFor="title" className="block text-gray-700 mb-2">
-            Product Title*
-          </label>
+          <label htmlFor="title" className="block text-gray-700 mb-2">Title*</label>
           <input
             type="text"
             id="title"
@@ -151,66 +142,45 @@ function AddProduct() {
             onChange={handleChange}
             className="w-full p-2 border rounded"
             required
-            aria-describedby={errors.title ? "title-error" : undefined}
             disabled={loading}
           />
-          {errors.title && (
-            <p id="title-error" className="text-sm text-red-500 mt-1">
-              {errors.title}
-            </p>
-          )}
+          {errors.title && <p className="text-sm text-red-500 mt-1">{errors.title}</p>}
         </div>
 
         <div>
-          <label htmlFor="price" className="block text-gray-700 mb-2">
-            Price* ($)
-          </label>
+          <label htmlFor="price" className="block text-gray-700 mb-2">Price*</label>
           <input
             type="number"
             id="price"
             name="price"
             value={product.price}
             onChange={handleChange}
-            step="0.01"
             min="0"
+            step="0.01"
             className="w-full p-2 border rounded"
             required
-            aria-describedby={errors.price ? "price-error" : undefined}
             disabled={loading}
           />
-          {errors.price && (
-            <p id="price-error" className="text-sm text-red-500 mt-1">
-              {errors.price}
-            </p>
-          )}
+          {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-gray-700 mb-2">
-            Description*
-          </label>
+          <label htmlFor="description" className="block text-gray-700 mb-2">Description*</label>
           <textarea
             id="description"
             name="description"
             value={product.description}
             onChange={handleChange}
-            rows="3"
             className="w-full p-2 border rounded"
+            rows="3"
             required
-            aria-describedby={errors.description ? "description-error" : undefined}
             disabled={loading}
-          />
-          {errors.description && (
-            <p id="description-error" className="text-sm text-red-500 mt-1">
-              {errors.description}
-            </p>
-          )}
+          ></textarea>
+          {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
         </div>
 
         <div>
-          <label htmlFor="category" className="block text-gray-700 mb-2">
-            Category*
-          </label>
+          <label htmlFor="category" className="block text-gray-700 mb-2">Category*</label>
           <select
             id="category"
             name="category"
@@ -218,28 +188,20 @@ function AddProduct() {
             onChange={handleChange}
             className="w-full p-2 border rounded"
             required
-            aria-describedby={errors.category ? "category-error" : undefined}
             disabled={loading}
           >
             <option value="">Select a category</option>
             <option value="electronics">Electronics</option>
-            <option value="clothing">Clothing</option>
-            <option value="books">Books</option>
-            <option value="home">Home & Kitchen</option>
+            <option value="fashion">Fashion</option>
+            <option value="home">Home</option>
             <option value="other">Other</option>
           </select>
-          {errors.category && (
-            <p id="category-error" className="text-sm text-red-500 mt-1">
-              {errors.category}
-            </p>
-          )}
+          {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
         </div>
 
         {product.category === "other" && (
           <div>
-            <label htmlFor="customCategory" className="block text-gray-700 mb-2">
-              Custom Category*
-            </label>
+            <label htmlFor="customCategory" className="block text-gray-700 mb-2">Custom Category*</label>
             <input
               type="text"
               id="customCategory"
@@ -247,29 +209,37 @@ function AddProduct() {
               value={product.customCategory}
               onChange={handleChange}
               className="w-full p-2 border rounded"
-              placeholder="Enter custom category"
-              required
-              aria-describedby={errors.customCategory ? "customCategory-error" : undefined}
               disabled={loading}
             />
-            {errors.customCategory && (
-              <p id="customCategory-error" className="text-sm text-red-500 mt-1">
-                {errors.customCategory}
-              </p>
-            )}
+            {errors.customCategory && <p className="text-sm text-red-500 mt-1">{errors.customCategory}</p>}
           </div>
         )}
 
         <div>
-          <label htmlFor="image" className="block text-gray-700 mb-2">
-            Product Image*
-          </label>
+          <label htmlFor="stock" className="block text-gray-700 mb-2">Stock*</label>
+          <input
+            type="number"
+            id="stock"
+            name="stock"
+            value={product.stock}
+            onChange={handleChange}
+            min="0"
+            className="w-full p-2 border rounded"
+            required
+            disabled={loading}
+          />
+          {errors.stock && <p className="text-sm text-red-500 mt-1">{errors.stock}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="image" className="block text-gray-700 mb-2">Product Image*</label>
           <input
             type="file"
             id="image"
             onChange={handleImageChange}
             className="w-full p-2 border rounded"
             accept="image/*"
+            ref={fileInputRef}
             required
             disabled={loading}
           />
@@ -282,11 +252,7 @@ function AddProduct() {
               />
             </div>
           )}
-          {errors.image && (
-            <p id="image-error" className="text-sm text-red-500 mt-1">
-              {errors.image}
-            </p>
-          )}
+          {errors.image && <p className="text-sm text-red-500 mt-1">{errors.image}</p>}
         </div>
 
         <button

@@ -12,7 +12,7 @@ const Footer = () => {
                 className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
               >
                 <img
-                  src="Logo/ChatGPT Image May 12, 2025, 12_53_47 AM.png"
+                  src="/Logo/ChatGPT Image May 12, 2025, 12_53_47 AM.png"
                   alt="Himel."
                   className="h-13 w-13 rounded-md"
                 />

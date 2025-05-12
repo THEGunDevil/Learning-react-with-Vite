@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import CheckOutBtn from "./Cart/CheckOutBtn";
-import CartListedprdct from "./Cart/CartListedprdct";
-import { productContext } from "../Contexts/ProductContext";
+import CheckOutBtn from "./CheckOutBtn";
+import CartListedprdct from "./CartListedprdct";
+import { productContext } from "../../Contexts/ProductContext";
 import { FaXmark } from "react-icons/fa6";
 import { FaShoppingCart } from "react-icons/fa";
 
@@ -46,13 +46,14 @@ function CartList() {
     >
       <header className="sticky top-0 bg-gray-800 z-10 p-4 border-b border-gray-700">
         <div className="flex items-center justify-between">
-          <NavLink
-            to="/"
-            className="text-2xl font-extrabold text-white hover:text-indigo-300 transition-colors"
-            onClick={handleCloseCartList}
-          >
-            LoGo.
+          <NavLink to="/">
+            <img
+              src="/Logo/ChatGPT Image May 12, 2025, 12_53_47 AM.png"
+              alt="Himel."
+              className="h-13 w-13 rounded-md"
+            />
           </NavLink>
+
           <button
             onClick={handleCloseCartList}
             className="p-2 text-gray-300 hover:text-white transition-colors"

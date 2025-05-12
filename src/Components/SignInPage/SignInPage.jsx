@@ -2,7 +2,9 @@ import React, { useContext, useState } from "react";
 import { FaSignInAlt, FaEnvelope, FaLock } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../../Contexts/UserContext";
-
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import { toast } from "react-toastify";
+import { handleShowPassWord } from "../..";
 const SignInPage = () => {
   const navigate = useNavigate();
   const { signin } = useContext(UserContext);
@@ -10,6 +12,8 @@ const SignInPage = () => {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,19 +23,30 @@ const SignInPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const signedUser = signin(formData.email, formData.password);
-    if (signedUser) {
-      e.target.reset();
-      setFormData({
-        email: "",
-        password: "",
-      });
-      navigate("/profile");
+    setLoading(true);
+    try {
+      const signedUser = await signin(formData.email, formData.password); // Await here
+      if (signedUser) {
+        e.target.reset();
+        setFormData({ email: "", password: "" });
+        navigate("/profile");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error("There was an error signing in.",{position:"top-center"})
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading)
+    return (
+      <div className="flex py-10 justify-center items-center">
+        <div className="w-12 h-12 border-4 border-indigo-500 border-dashed rounded-full animate-spin"></div>
+      </div>
+    );
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
@@ -51,8 +66,10 @@ const SignInPage = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                <FaEnvelope className="inline mr-2 text-gray-400" />
-                Email address
+                <span className="flex items-center">
+                  <FaEnvelope className="inline mr-2 text-gray-400" />
+                  Email address
+                </span>
               </label>
               <div className="mt-1">
                 <input
@@ -71,16 +88,21 @@ const SignInPage = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-gray-700 flex items-center justify-between"
               >
-                <FaLock className="inline mr-2 text-gray-400" />
-                Password
+                <span className="flex items-center">
+                  <FaLock className="inline mr-2 text-gray-400" />
+                  Password
+                </span>
+                <span onClick={()=>handleShowPassWord(showPassword,setShowPassword)}>
+                  {showPassword ? <BsFillEyeSlashFill /> : <BsFillEyeFill />}
+                </span>
               </label>
               <div className="mt-1">
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"

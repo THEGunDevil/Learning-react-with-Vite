@@ -2,9 +2,13 @@ import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserContext } from "../../Contexts/UserContext";
-
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import { handleShowPassWord } from "../..";
 const RegistrationPage = () => {
-  const navgate = useNavigate();
+  const navigate = useNavigate();
+  const [showPassword,setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { register } = useContext(UserContext);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -23,38 +27,65 @@ const RegistrationPage = () => {
       [name]: value,
     }));
   };
-
-  const handleSubmit = (e) => {
+  const handleShowConfirmPassWord = (e) => {
+    setShowConfirmPassword((prev) => !prev);
+  };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Oops! The passwords you entered don't match.", {
+    setLoading(true);
+
+    try {
+      if (formData.password !== formData.confirmPassword) {
+        toast.error("Oops! The passwords you entered don't match.", {
+          position: "bottom-center",
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Call the register function and wait for it to complete
+      const registeredUser = await register(
+        formData.email,
+        formData.password,
+        formData.firstName,
+        formData.lastName,
+        formData.phone,
+        formData.address
+      );
+
+      if (registeredUser) {
+        // Reset form after successful registration
+        e.target.reset();
+        setFormData({
+          email: "",
+          password: "",
+          confirmPassword: "",
+          firstName: "",
+          lastName: "",
+          phone: "",
+          address: "",
+        });
+
+        // Navigate to profile page after user context is updated
+        navigate("/profile");
+      } else {
+        throw new Error("Registration failed");
+      }
+    } catch (error) {
+      console.error("There was an error registering your account:", error);
+      toast.error("There was an error registering your account.", {
         position: "bottom-center",
       });
-    }
-    const registeredUser = register(
-      formData.email,
-      formData.password,
-      formData.firstName,
-      formData.lastName,
-      formData.phone,
-      formData.address
-    );
-
-    if (registeredUser) {
-      e.target.reset();
-      setFormData({
-        email: "",
-        password: "",
-        confirmPassword: "",
-        firstName: "",
-        lastName: "",
-        phone: "",
-        address: "",
-      });
-      navgate("/profile");
+    } finally {
+      setLoading(false);
     }
   };
-
+  if (loading)
+    return (
+      <div className="flex py-10 justify-center items-center">
+        <div className="w-12 h-12 border-4 border-indigo-500 border-dashed rounded-full animate-spin"></div>
+      </div>
+    );
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -134,15 +165,25 @@ const RegistrationPage = () => {
                 <div>
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-sm font-medium text-gray-700 flex justify-between items-center"
                   >
-                    Password
+                    <span>Password</span>
+                    <span
+                      className="cursor-pointer"
+                      onClick={()=>handleShowPassWord(showPassword,setShowPassword)}
+                    >
+                      {showPassword ? (
+                        <BsFillEyeSlashFill />
+                      ) : (
+                        <BsFillEyeFill />
+                      )}
+                    </span>
                   </label>
                   <div className="mt-1">
                     <input
                       id="password"
                       name="password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       required
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       value={formData.password}
@@ -154,15 +195,25 @@ const RegistrationPage = () => {
                 <div>
                   <label
                     htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700"
+                    className="text-sm font-medium text-gray-700 flex justify-between items-center"
                   >
-                    Confirm Password
+                    <span>Confirm Password</span>
+                    <span
+                      className="cursor-pointer"
+                      onClick={(e) => handleShowConfirmPassWord(e)}
+                    >
+                      {showConfirmPassword ? (
+                        <BsFillEyeSlashFill />
+                      ) : (
+                        <BsFillEyeFill />
+                      )}
+                    </span>
                   </label>
                   <div className="mt-1">
                     <input
                       id="confirmPassword"
                       name="confirmPassword"
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       required
                       className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       value={formData.confirmPassword}

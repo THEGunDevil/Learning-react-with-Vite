@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   FaUser,
   FaEnvelope,
@@ -24,10 +24,12 @@ import {
   EmailAuthProvider,
 } from "firebase/auth";
 import { toast } from "react-toastify";
-
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import { handleShowPassWord } from "../..";
 const ConfirmDeletePopup = ({ onConfirm, onCancel }) => {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleConfirm = () => {
     if (!password) {
@@ -60,12 +62,13 @@ const ConfirmDeletePopup = ({ onConfirm, onCancel }) => {
         <div className="mb-4">
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="text-sm font-medium text-gray-700 mb-1 flex items-center justify-between"
           >
-            Enter your password to confirm
+            <span> Enter your password to confirm</span>
+            <span onClick={()=>handleShowPassWord(showPassword,setShowPassword)}>{showPassword ? <BsFillEyeSlashFill/> : <BsFillEyeFill/>}</span>
           </label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             value={password}
             onChange={(e) => {
@@ -272,7 +275,8 @@ const Profile = () => {
                       )}
                       <p className="text-indigo-200 text-[13px] sm:text-lg mt-1">
                         Member since{" "}
-                        {user?.createdAt && typeof user.createdAt.toDate === "function"
+                        {user?.createdAt &&
+                        typeof user.createdAt.toDate === "function"
                           ? user.createdAt.toDate().toLocaleString("en-US", {
                               year: "numeric",
                               month: "long",
@@ -285,7 +289,7 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="space-y-2 pt-5 lg:p-0">
-                    {user?.roles === "Author" && (
+                    {user?.role === "Admin" && (
                       <button
                         onClick={() => navigate("/addproduct")}
                         className="flex items-center space-x-1 bg-indigo-600 hover:bg-indigo-800 sm:px-4 px-2.5 py-2 rounded-md transition-colors"
@@ -422,7 +426,7 @@ const Profile = () => {
                       </p>
                       <button
                         onClick={() => navigate("/changepassword")}
-                        className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+                        className="text-indigo-600 hover:text-indigo-800 text-sm font-medium cursor-pointer"
                       >
                         Change Password
                       </button>
@@ -473,7 +477,7 @@ const Profile = () => {
               </div>
             </section>
           </div>
-          {user?.roles === "Author" && <MyProducts />}
+          {/* {user?.role === "Admin" && <MyProducts />} */}
           {showDeletePopup && (
             <ConfirmDeletePopup
               onConfirm={handleDeleteAccount}

@@ -22,3 +22,6 @@ export const useHandleFilteredPrdcts = () => {
 
   return handleFilteredPrdcts;
 };
+export const handleShowPassWord = (showPassword,setShowPassword) => {
+    setShowPassword((prev) => !prev);
+  };
