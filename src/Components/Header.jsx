@@ -37,7 +37,7 @@ const Header = () => {
   };
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 flex font-secondary items-center xl:px-20 md:px-6 lg:px-20 sm:px-6 px-4 justify-between h-18 shadow w-full bg-white">
+      <nav className="fixed top-0 left-0 right-0 z-40 flex items-center xl:px-20 md:px-6 lg:px-20 sm:px-6 px-4 justify-between h-18 shadow w-full bg-white">
         <div className="text-4xl font-extrabold">
           <NavLink to="/">
             <img
